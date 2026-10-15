@@ -2,7 +2,7 @@
 
 A relaxing fishing game that runs right in your browser. Fish your way through a full year on a mountain lake: the seasons change, holidays bring surprises, and the rarest catches are worth chasing.
 
-**Play it here:** https://johnnyelbows69.github.io/last-light-lake/
+**Play it here:** https://JohnnyElbows69.github.io/Last-Light-Lake/
 
 ## How to play
 
