@@ -1,5 +1,12 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A cozy fishing game you can play in your browser. Fish through a full year on a mountain lake, alone or with a friend.">
+<style>body{margin:0} :root{padding-top:env(safe-area-inset-top, 0px); padding-bottom:env(safe-area-inset-bottom, 0px)}</style>
 <title>Last Light Lake</title>
-<meta name="claude:viewport-fit-sides" content="cover">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Chivo:wght@400;600;700&family=Chivo+Mono:wght@400;600&display=swap">
@@ -72,7 +79,10 @@ h1 span{color:var(--bobber)}
 @media (max-width:560px){
   .topbar{top:8px; left:8px; right:8px}
   .icons .ic{width:30px; height:30px}
-  .info{padding:4px 10px; font-size:12px}
+  .icons .helpic{display:none}
+  .info{padding:4px 9px; font-size:12px; gap:4px 6px; flex-wrap:nowrap; white-space:nowrap}
+  .info b{font-size:13px}
+  #duoChipName{display:none}
   .info .wide{display:none}
   .ic{width:32px; height:32px}
   .ic svg{width:16px; height:16px}
@@ -276,10 +286,63 @@ tr.fresh td{animation:fresh 2.4s ease-out}
 .meta b{font-weight:600; font-size:14.5px}
 .meta span{font-size:12.5px; color:var(--muted); line-height:1.35}
 
+/* ---------- two player ---------- */
+.duochip{display:inline-flex; align-items:center; gap:6px; font-size:12.5px; color:var(--ink); white-space:nowrap}
+.duochip i{width:8px; height:8px; border-radius:50%; background:#6fd08a; box-shadow:0 0 6px rgba(111,208,138,.8)}
+.tourbar{position:absolute; top:58px; left:50%; transform:translateX(-50%); z-index:7; display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:2px 14px; width:max-content; max-width:calc(100% - 24px); padding:6px 16px; border-radius:18px; background:var(--scrim); border:1px solid rgba(216,163,69,.55); font-size:13px; color:var(--muted); pointer-events:none}
+.tourbar b{font-family:var(--mono); font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums}
+.tourbar .lead b{color:var(--brass)}
+.tourbar .tt{color:var(--brass)}
+.stage.touring .hud, .stage.touring .banner{top:100px}
+@media (max-width:560px){
+  .tourbar{top:48px; font-size:12px; padding:4px 12px}
+  .stage.touring .hud, .stage.touring .banner{top:86px}
+}
+.tourbig{position:absolute; left:50%; top:42%; transform:translate(-50%, -50%); z-index:8; font-family:var(--display); font-size:clamp(48px, 12vw, 96px); line-height:1; color:var(--brass); text-shadow:0 4px 18px rgba(0,0,0,.6); pointer-events:none}
+.feed{position:absolute; right:12px; bottom:52px; z-index:7; display:flex; flex-direction:column; align-items:flex-end; gap:6px; max-width:min(330px, 62%); pointer-events:none}
+.feed div{padding:6px 12px; border-radius:10px; background:var(--panel); border-left:3px solid var(--c, var(--rule)); font-size:13px; line-height:1.35; box-shadow:0 6px 16px rgba(0,0,0,.35); animation:feedin .3s ease-out}
+.feed div b{font-weight:600; color:#7fd0ff}
+.feed div.out{opacity:0; transition:opacity .6s}
+@keyframes feedin{from{opacity:0; transform:translateX(12px)}}
+.result{position:absolute; left:50%; top:52%; transform:translate(-50%, -50%); z-index:18; width:min(380px, 92%); max-height:calc(100% - 20px); overflow:auto; padding:16px 20px 18px; border-radius:12px; background:var(--panel); border:2px solid var(--brass); box-shadow:0 0 40px rgba(216,163,69,.4), 0 18px 40px rgba(0,0,0,.5); display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center; cursor:default}
+.result .kicker{font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--brass)}
+.result h3{font-family:var(--display); font-weight:400; font-size:clamp(22px, 4vw, 30px); margin:0; line-height:1.1; text-wrap:balance}
+.result .tablewrap{width:100%}
+.result table{font-size:13.5px; text-align:left}
+.result .prize{margin:0; font-family:var(--mono); color:var(--brass); font-weight:600}
+.result .prize:empty{display:none}
+.duo label{display:block; font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-bottom:6px}
+input.txt{font:inherit; font-size:15px; color:var(--ink); background:var(--night); border:1px solid var(--rule); border-radius:8px; padding:7px 12px; width:100%; max-width:280px; min-width:0}
+input.txt::placeholder{color:var(--muted); opacity:.7}
+input.txt:focus-visible{outline:2px solid var(--brass); outline-offset:1px}
+input.code{font-family:var(--mono); text-transform:uppercase; letter-spacing:.2em; max-width:140px}
+.duo-grid{display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:14px; margin-top:16px}
+@media (max-width:640px){ .duo-grid{grid-template-columns:minmax(0, 1fr)} }
+.duo-box{background:var(--panel-2); border-radius:10px; padding:14px 16px; display:flex; flex-direction:column; gap:9px; align-items:flex-start; min-width:0}
+.duo-box h3{margin:0; font-size:15px; font-weight:600}
+.duo-box p{margin:0; font-size:13.5px; color:var(--muted)}
+.joinrow{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+.bigcode{font-family:var(--mono); font-weight:600; font-size:clamp(30px, 7vw, 44px); line-height:1.1; letter-spacing:.24em; color:var(--brass); user-select:all; -webkit-user-select:all}
+.lenrow{display:flex; gap:6px; flex-wrap:wrap}
+.lenrow button.on{color:var(--ink); border-color:var(--brass); background:rgba(216,163,69,.15)}
+.duo-actions{display:flex; gap:8px; flex-wrap:wrap}
+#duoLive > .duo-actions{margin-top:14px}
+.duo-state{font-size:12.5px; color:var(--muted)}
+.duo-with{margin:0 0 14px; font-size:14px; color:var(--muted); max-width:64ch}
+.duo-with b{color:var(--ink)}
+.duo-busy{margin:12px 0 0; font-size:13.5px; color:var(--muted)}
+.duo-busy:empty{display:none}
+.duo-msg{margin:14px 0 0; font-size:13.5px; color:var(--t-legendary); max-width:64ch}
+.duo-msg:empty{display:none}
+.duo-note{margin:16px 0 0; font-size:12.5px; color:var(--muted); max-width:64ch}
+
 @media (prefers-reduced-motion: reduce){
-  .card, .card::after, .flash.go, .banner, .sheet, .hud.danger .track.tension{animation:none !important}
+  .card, .card::after, .flash.go, .banner, .sheet, .hud.danger .track.tension, .feed div{animation:none !important}
 }
 </style>
+</head>
+<body>
+
 
 <div class="wrap">
   <header class="top">
@@ -299,6 +362,7 @@ tr.fresh td{animation:fresh 2.4s ease-out}
         <span class="season wide" id="seasonChip"></span>
         <span class="holchip wide" id="holChip" hidden></span>
         <span class="coins"><span class="coin"></span><b id="coins">0</b></span>
+        <span class="duochip" id="duoChip" hidden><i></i><span id="duoChipName"></span></span>
       </div>
       <nav class="icons" aria-label="Game menu">
         <button class="ic" type="button" data-open="cal" aria-label="Calendar" title="Calendar">
@@ -311,7 +375,10 @@ tr.fresh td{animation:fresh 2.4s ease-out}
           <svg viewBox="0 0 24 24"><rect x="3" y="9" width="18" height="11" rx="2"/><path d="M8 9V6.5A1.5 1.5 0 0 1 9.5 5h5A1.5 1.5 0 0 1 16 6.5V9M3 13.5h18"/><path d="M11 12.5h2v2h-2z"/></svg>
           <span class="pip" id="shopPip" hidden></span>
         </button>
-        <button class="ic" type="button" data-open="help" aria-label="How to fish" title="How to fish">
+        <button class="ic" type="button" data-open="duo" aria-label="Two player" title="Two player">
+          <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.3 3-5.2 6-5.2s5.4 1.9 6 5.2"/><circle cx="16.8" cy="9.2" r="2.5"/><path d="M15.8 14.4c2.6-.3 4.7 1.3 5.4 4.4"/></svg>
+        </button>
+        <button class="ic helpic" type="button" data-open="help" aria-label="How to fish" title="How to fish">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7M12 17h.01"/></svg>
         </button>
         <button class="ic" type="button" id="pauseBtn" aria-label="Pause the game" title="Pause (P)"></button>
@@ -321,8 +388,24 @@ tr.fresh td{animation:fresh 2.4s ease-out}
 
     <div class="pausecard" id="pauseCard" hidden>
       <b>Paused</b>
-      <span>Time is stopped. The clock, the calendar, and any fish on your line will wait for you. The menu up top still works if you want to shop or check your log.</span>
+      <span id="pauseText">Time is stopped. The clock, the calendar, and any fish on your line will wait for you. The menu up top still works if you want to shop or check your log.</span>
       <button class="buy" type="button" id="resumeBtn">Resume</button>
+    </div>
+
+    <div class="tourbar" id="tourBar" hidden></div>
+    <div class="tourbig" id="tourBig" hidden></div>
+    <div class="feed" id="feed" aria-live="polite"></div>
+    <div class="result" id="tourResult" hidden role="dialog" aria-label="Tournament results">
+      <span class="kicker">Tournament over</span>
+      <h3 id="resTitle"></h3>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Angler</th><th class="num">Fish</th><th class="num">Total</th><th class="num">Biggest</th></tr></thead>
+          <tbody id="resBody"></tbody>
+        </table>
+      </div>
+      <p class="prize" id="resPrize"></p>
+      <button class="buy" type="button" id="resClose">Keep fishing</button>
     </div>
 
     <div class="hud" id="hud" hidden>
@@ -349,6 +432,7 @@ tr.fresh td{animation:fresh 2.4s ease-out}
           <button class="tab" type="button" role="tab" data-tab="cal">Calendar</button>
           <button class="tab" type="button" role="tab" data-tab="log">Catch log</button>
           <button class="tab" type="button" role="tab" data-tab="shop">Tackle shop</button>
+          <button class="tab" type="button" role="tab" data-tab="duo">Two player</button>
           <button class="tab" type="button" role="tab" data-tab="help">How to fish</button>
         </div>
         <button class="close" type="button" id="sheetClose" aria-label="Close and keep fishing">
@@ -404,6 +488,62 @@ tr.fresh td{animation:fresh 2.4s ease-out}
           </div>
         </section>
 
+        <section class="pane duo" data-tab="duo">
+          <div class="panehead"><h2>Two player</h2><span class="duo-state" id="duoState">Not connected</span></div>
+
+          <div id="duoSetup">
+            <label for="duoName">Your name</label>
+            <input class="txt" id="duoName" type="text" maxlength="16" placeholder="Angler" autocomplete="nickname">
+            <div class="duo-grid">
+              <div class="duo-box">
+                <h3>Host a game</h3>
+                <p>Get an invite code to send to a friend. They join your lake and your time of day.</p>
+                <button class="buy" type="button" id="duoHostBtn">Host a game</button>
+              </div>
+              <div class="duo-box">
+                <h3>Join a game</h3>
+                <p>Enter the invite code your friend sent you.</p>
+                <div class="joinrow">
+                  <input class="txt code" id="duoCode" type="text" maxlength="5" placeholder="CODE" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Invite code">
+                  <button type="button" id="duoJoinBtn">Join</button>
+                </div>
+              </div>
+            </div>
+            <p class="duo-busy" id="duoBusy"></p>
+          </div>
+
+          <div id="duoWaiting" hidden>
+            <div class="duo-box">
+              <h3>Your invite code</h3>
+              <div class="bigcode" id="duoCodeShow"></div>
+              <p>Send this code to your friend. They open the game, tap the Two player icon, and enter it under Join a game.</p>
+              <div class="duo-actions"><button type="button" id="duoCopy">Copy code</button><button type="button" id="duoCancel">Cancel</button></div>
+            </div>
+            <p class="duo-busy">Waiting for your friend to join. You can close this menu and keep fishing while you wait.</p>
+          </div>
+
+          <div id="duoLive" hidden>
+            <p class="duo-with">You're fishing with <b id="duoPartner"></b>. <span id="duoHostNote"></span> Your coins, gear, and catch log stay your own.</p>
+            <div class="duo-box">
+              <h3>Tournament</h3>
+              <p id="duoTourText"></p>
+              <div class="lenrow" id="duoLen" role="group" aria-label="Tournament length">
+                <button type="button" data-len="3">3 min</button>
+                <button type="button" data-len="5" class="on">5 min</button>
+                <button type="button" data-len="10">10 min</button>
+              </div>
+              <div class="duo-actions">
+                <button class="buy" type="button" id="duoTourBtn">Start tournament</button>
+                <button type="button" id="duoTourStop" hidden>Stop tournament</button>
+              </div>
+            </div>
+            <div class="duo-actions"><button type="button" id="duoLeave">Leave game</button></div>
+          </div>
+
+          <p class="duo-msg" id="duoMsg" role="status"></p>
+          <p class="duo-note">Two player connects your two browsers directly, so you'll both need an internet connection. It works on the GitHub version of the game, not inside the Claude preview.</p>
+        </section>
+
         <section class="pane how" data-tab="help">
           <div class="panehead"><h2>How to fish</h2></div>
           <ol>
@@ -415,6 +555,7 @@ tr.fresh td{animation:fresh 2.4s ease-out}
           <p>Works with a mouse, touch, or the <kbd>Space</kbd> bar. The game pauses while this panel is open. Press <kbd>Esc</kbd> to close it.</p>
           <p>Need a break? Tap the pause button in the corner or press <kbd>P</kbd>. Time stops completely until you resume.</p>
           <p>Listen at night for crickets and frogs out on the water. Winter nights stay quiet while they wait for spring.</p>
+          <p>Want company? Open Two player to host a game or join a friend with an invite code. You'll share the lake, see each other's lines, and can race in a tournament.</p>
         </section>
 
       </div>
@@ -492,7 +633,7 @@ tr.fresh td{animation:fresh 2.4s ease-out}
      ========================================================= */
   const SAVE_KEY = 'last-light-lake-v2';
   const todayReal = () => { const n = new Date(); return {y:n.getFullYear(), m:n.getMonth() + 1, d:n.getDate()}; };
-  const fresh = () => ({log:{}, coins:0, owned:{rod:['willow'], bobber:['classic']}, rod:'willow', bobber:'classic', muted:false, date:todayReal(), hour:18, gifts:{}});
+  const fresh = () => ({log:{}, coins:0, owned:{rod:['willow'], bobber:['classic']}, rod:'willow', bobber:'classic', muted:false, date:todayReal(), hour:18, gifts:{}, name:''});
   let save = fresh();
   try {
     const s = JSON.parse(localStorage.getItem(SAVE_KEY));
@@ -502,7 +643,15 @@ tr.fresh td{animation:fresh 2.4s ease-out}
       if (old) save.log = old;
     }
   } catch (e) {}
-  function persist(){ try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {} }
+  // two player state; a guest borrows the host's clock, so their own date is kept aside and saved instead
+  const duo = {role:null, peer:null, conn:null, code:'', partner:'', ownClock:null, lastHeard:0, tick:0, session:0, view:'setup',
+               tour:{ph:'off', rem:0, len:5, sc:null, id:0}, lastPh:'off', goUntil:0, lastSec:0, shownResult:0};
+  function persist(){
+    try {
+      const out = duo.ownClock ? Object.assign({}, save, duo.ownClock) : save;
+      localStorage.setItem(SAVE_KEY, JSON.stringify(out));
+    } catch (e) {}
+  }
   const curRod = () => RODS.find(r => r.id === save.rod) || RODS[0];
   const curBob = () => BOBBERS.find(b => b.id === save.bobber) || BOBBERS[0];
 
@@ -1056,6 +1205,7 @@ tr.fresh td{animation:fresh 2.4s ease-out}
     const coins = Math.max(1, Math.round(sp.base + sp.perLb*weight));
     save.coins += coins;
     persist(); renderLog(sp.id); renderWallet(); renderShop();
+    duoOnCatch(sp, weight);
     splash(reel.fx, reel.fy, tier.rank >= 4 ? 1.6 : 1.1);
     celebrate(reel.fx, reel.fy, tier);
     Sound.win(tier.rank, sp.rarity === 'Holiday');
@@ -1143,7 +1293,7 @@ tr.fresh td{animation:fresh 2.4s ease-out}
     else if (state === 'reeling') holding = false;
   }
   stage.addEventListener('pointerdown', e => {
-    if (e.button > 0 || sheetOpen || userPaused || e.target.closest('.topbar, .sheet, .pausecard')) return;
+    if (e.button > 0 || sheetOpen || userPaused || e.target.closest('.topbar, .sheet, .pausecard, .result')) return;
     e.preventDefault();
     try { stage.setPointerCapture(e.pointerId); } catch (err) {}
     stage.focus({preventScroll:true});
@@ -1154,6 +1304,7 @@ tr.fresh td{animation:fresh 2.4s ease-out}
   window.addEventListener('keydown', e => {
     if (e.key === 'Escape' && sheetOpen){ closeSheet(); return; }
     if (e.key === 'Escape' && userPaused){ setPaused(false); return; }
+    if (e.target.closest && e.target.closest('input, textarea')) return;
     if ((e.key === 'p' || e.key === 'P') && !sheetOpen && !e.repeat){ setPaused(!userPaused); return; }
     if (e.code !== 'Space' || sheetOpen || userPaused) return;
     if (e.target.closest && e.target.closest('button')) return;
@@ -1163,7 +1314,7 @@ tr.fresh td{animation:fresh 2.4s ease-out}
   window.addEventListener('keyup', e => { if (e.code === 'Space' && !sheetOpen && !userPaused) release(); });
   window.addEventListener('blur', () => { if (!sheetOpen) release(); });
   window.addEventListener('pointerdown', () => Sound.init());
-  window.addEventListener('pagehide', persist);
+  window.addEventListener('pagehide', () => { if (duo.conn) duoSend({t:'bye'}); persist(); });
   document.addEventListener('visibilitychange', () => { if (document.hidden) persist(); });
 
   /* ---------- the in-game menu sheet ---------- */
@@ -1196,7 +1347,7 @@ tr.fresh td{animation:fresh 2.4s ease-out}
 
   /* ---------- pause ---------- */
   const pauseBtn = $('pauseBtn'), pauseCard = $('pauseCard');
-  function setPaused(on){
+  function setPaused(on, by){
     Sound.init();
     if (on && state === 'charging'){ state = 'idle'; powerWrap.hidden = true; setPrompt(IDLE_TEXT, '', {force:true}); }
     holding = false;
@@ -1204,8 +1355,14 @@ tr.fresh td{animation:fresh 2.4s ease-out}
     pauseCard.hidden = !on;
     Sound.hold(on);
     if (!on){ last = performance.now(); stage.focus({preventScroll:true}); }
-    else { persist(); $('resumeBtn').focus({preventScroll:true}); }
+    else { persist(); if (!sheetOpen) $('resumeBtn').focus({preventScroll:true}); }
+    $('pauseText').textContent = by
+      ? `${by} paused the game. Time is stopped for both of you, and either of you can resume.`
+      : duoLive()
+        ? 'Time is stopped for both of you. Either of you can resume. The menu up top still works.'
+        : 'Time is stopped. The clock, the calendar, and any fish on your line will wait for you. The menu up top still works if you want to shop or check your log.';
     renderPauseBtn();
+    if (!by && duoLive()) duoSend({t:'pause', on});
   }
   function renderPauseBtn(){
     pauseBtn.innerHTML = userPaused
@@ -1236,6 +1393,7 @@ tr.fresh td{animation:fresh 2.4s ease-out}
 
   $('campBtn').addEventListener('click', () => {
     const note = $('campNote');
+    if (duo.ownClock){ note.textContent = `${duo.partner} is hosting, so only they can skip ahead.`; return; }
     if (['flying', 'waiting', 'bite', 'reeling'].includes(state)){
       note.textContent = 'Reel in your line before you camp.';
       return;
@@ -1247,14 +1405,481 @@ tr.fresh td{animation:fresh 2.4s ease-out}
     Sound.chime();
     closeSheet();
     toIdle('You camped overnight. Good morning!');
+    if (duoLive()){ duoSend(worldMsg()); duoSend({t:'camp'}); }
   });
+
+  /* =========================================================
+     TWO PLAYER
+     The host keeps the shared clock and runs tournaments. Each player keeps their own save.
+     ========================================================= */
+  const PEER_LIB = 'https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js';
+  const CODE_CHARS = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+  const ID_PREFIX = 'lastlightlake-';
+  const GAME_URL = 'johnnyelbows69.github.io/Last-Light-Lake';
+  const OFFLINE_MSG = `Couldn't reach the two player service. Check your internet connection and try again. If you're playing inside Claude, open the GitHub version instead: ${GAME_URL}`;
+  const PARTNER_COLOR = '#7fd0ff';
+  const pv = {st:'i', x:0, y:0, s:0, d:0, T:0, fx:0, fy:0, bb:'classic', rod:'willow', seen:false};
+  const pd = {x:0, y:0, s:0, d:0, T:0, fx:0, fy:0};
+  const PV_NUM = ['x', 'y', 's', 'd', 'T', 'fx', 'fy'];
+  let partnerTagAt = null, tourLen = 5, lastTourHTML = '';
+  const feedEl = $('feed'), tourBar = $('tourBar'), tourBig = $('tourBig'), tourResult = $('tourResult');
+  const duoLive = () => !!(duo.conn && duo.partner);
+  const myNameNow = () => (save.name || '').trim() || 'Angler';
+  const article = w => /^[aeiou]/i.test(w) ? 'an' : 'a';
+  const fmtClockSecs = secs => { secs = Math.max(0, Math.ceil(secs)); return `${Math.floor(secs/60)}:${String(secs % 60).padStart(2, '0')}`; };
+
+  function duoSend(m){ if (duo.conn && duo.conn.open){ try { duo.conn.send(m); } catch (e) {} } }
+  function duoMsg(text){ $('duoMsg').textContent = text || ''; }
+
+  function loadPeerLib(){
+    if (window.Peer) return Promise.resolve();
+    return new Promise((res, rej) => {
+      const el = document.createElement('script');
+      el.src = PEER_LIB; el.async = true;
+      el.onload = () => window.Peer ? res() : rej({type:'lib'});
+      el.onerror = () => rej({type:'lib'});
+      document.head.appendChild(el);
+    });
+  }
+  const newCode = () => Array.from({length:5}, () => CODE_CHARS[Math.floor(Math.random()*CODE_CHARS.length)]).join('');
+  function readName(){
+    save.name = $('duoName').value.replace(/\s+/g, ' ').trim().slice(0, 16);
+    persist();
+    return myNameNow();
+  }
+  function errText(err){
+    const type = err && err.type;
+    if (type === 'peer-unavailable') return 'No game found with that code. Check the code, or ask your friend to host a new game.';
+    if (type === 'unavailable-id') return "Couldn't make an invite code just now. Try again in a moment.";
+    if (type === 'browser-incompatible') return "This browser can't do two player. Try a recent version of Chrome, Edge, Firefox, or Safari.";
+    return OFFLINE_MSG;
+  }
+  function makePeer(id){
+    return new Promise((res, rej) => {
+      let done = false, peer;
+      try { peer = id ? new window.Peer(id, window.LLL_PEER_OPTS || {}) : new window.Peer(window.LLL_PEER_OPTS || {}); }
+      catch (e) { rej({type:'browser-incompatible'}); return; }
+      const finish = (ok, val) => { if (done) return; done = true; clearTimeout(timer); if (ok) res(peer); else { try { peer.destroy(); } catch (e) {} rej(val); } };
+      const timer = setTimeout(() => finish(false, {type:'timeout'}), 12000);
+      peer.on('open', () => finish(true));
+      peer.on('error', err => finish(false, err));
+    });
+  }
+
+  async function duoHost(){
+    Sound.init();
+    readName(); duoMsg('');
+    const session = ++duo.session;
+    setDuoView('busy', 'Setting up your game...');
+    try {
+      await loadPeerLib();
+      let peer = null;
+      for (let i = 0; i < 4 && !peer; i++){
+        const code = newCode();
+        try { peer = await makePeer(ID_PREFIX + code); duo.code = code; }
+        catch (err){ if (err.type !== 'unavailable-id') throw err; }
+      }
+      if (!peer) throw {type:'unavailable-id'};
+      if (session !== duo.session){ peer.destroy(); return; }
+      duo.peer = peer; duo.role = 'host';
+      peer.on('connection', c => {
+        if (duo.conn){ c.on('open', () => { try { c.send({t:'full'}); } catch (e) {} setTimeout(() => c.close(), 400); }); return; }
+        wireConn(c);
+      });
+      peer.on('error', err => { if (!duoLive() && err.type !== 'peer-unavailable') duoMsg(errText(err)); });
+      $('duoCodeShow').textContent = duo.code;
+      setDuoView('wait');
+    } catch (err){
+      if (session !== duo.session) return;
+      duoReset(); duoMsg(errText(err));
+    }
+  }
+
+  async function duoJoin(){
+    Sound.init();
+    const code = $('duoCode').value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (code.length !== 5){ duoMsg('Invite codes are 5 letters and numbers. Check the code and try again.'); return; }
+    readName(); duoMsg('');
+    const session = ++duo.session;
+    setDuoView('busy', 'Looking for that game...');
+    try {
+      await loadPeerLib();
+      const peer = await makePeer(null);
+      if (session !== duo.session){ peer.destroy(); return; }
+      duo.peer = peer; duo.role = 'guest'; duo.code = code;
+      peer.on('error', err => { if (!duoLive() && session === duo.session){ duoReset(); duoMsg(errText(err)); } });
+      wireConn(peer.connect(ID_PREFIX + code, {reliable:true}));
+      setTimeout(() => {
+        if (session === duo.session && duo.role === 'guest' && !duoLive()){
+          duoReset(); duoMsg(`Couldn't connect to game ${code}. Make sure your friend's game is still open, then try again.`);
+        }
+      }, 15000);
+    } catch (err){
+      if (session !== duo.session) return;
+      duoReset(); duoMsg(errText(err));
+    }
+  }
+
+  function wireConn(c){
+    c.on('open', () => {
+      duo.conn = c; duo.lastHeard = performance.now();
+      const hello = {t:'hello', name:myNameNow(), v:1};
+      if (duo.role === 'host'){ hello.w = worldMsg(); hello.paused = userPaused; }
+      duoSend(hello);
+    });
+    c.on('data', m => { duo.lastHeard = performance.now(); onMsg(m); });
+    c.on('close', () => { if (duo.conn === c) duoDrop(`${duo.partner || 'Your friend'} left the lake.`); });
+    c.on('error', () => { if (duo.conn === c) duoDrop('The connection was lost.'); });
+  }
+
+  function onMsg(m){
+    if (!m || typeof m !== 'object') return;
+    switch (m.t){
+      case 'full':
+        duoReset(); duoMsg('That game already has two players.');
+        break;
+      case 'hello': {
+        const first = !duo.partner;
+        duo.partner = String(m.name || 'Angler').replace(/\s+/g, ' ').trim().slice(0, 16) || 'Angler';
+        if (duo.role === 'guest'){
+          if (!duo.ownClock) duo.ownClock = {date:Object.assign({}, save.date), hour:save.hour};
+          if (m.w) applyWorld(m.w);
+          if (!!m.paused !== userPaused) setPaused(!!m.paused, m.paused ? duo.partner : '');
+        }
+        if (first){
+          pv.seen = false;
+          setDuoView('live');
+          feed(duo.role === 'host' ? 'joined your lake.' : 'welcomed you to their lake.', '#6fd08a', duo.partner);
+          Sound.chime();
+        }
+        break;
+      }
+      case 'p': {
+        const changed = String(m.st) !== pv.st;
+        for (const k of PV_NUM) pv[k] = Number.isFinite(+m[k]) ? +m[k] : 0;
+        pv.st = ['i', 'f', 'w', 'b', 'r'].includes(m.st) ? m.st : 'i';
+        pv.bb = String(m.bb || 'classic'); pv.rod = String(m.rod || 'willow');
+        if (changed || !pv.seen) for (const k of PV_NUM) pd[k] = pv[k];
+        pv.seen = true;
+        break;
+      }
+      case 'w':
+        if (duo.role === 'guest') applyWorld(m);
+        break;
+      case 'camp':
+        if (duo.role === 'guest') feed('camped overnight. Good morning!', '#8fd0c0', duo.partner);
+        break;
+      case 'pause':
+        if (!!m.on !== userPaused) setPaused(!!m.on, m.on ? duo.partner : '');
+        break;
+      case 'c':
+        onPartnerCatch(m);
+        break;
+      case 'treq':
+        if (duo.role === 'host') startTour(m.len);
+        break;
+      case 'tstop':
+        if (duo.role === 'host') stopTour();
+        else { duo.tour = {ph:'off', rem:0, len:duo.tour.len, sc:null, id:0}; feed('The tournament was stopped.', '#93a1ae'); renderDuoTour(); }
+        break;
+      case 'tend':
+        if (duo.role === 'guest'){ duo.tour.ph = 'done'; showTourResult(m.sc, m.id); }
+        break;
+      case 'bye':
+        duoDrop(`${duo.partner || 'Your friend'} left the lake.`);
+        break;
+    }
+  }
+
+  function worldMsg(){
+    const T = duo.tour;
+    return {t:'w', date:save.date, hour:save.hour, tour:{ph:T.ph, rem:T.rem, len:T.len, sc:T.sc, id:T.id}};
+  }
+  function applyWorld(w){
+    if (!w || !w.date) return;
+    const d = {y:+w.date.y, m:+w.date.m, d:+w.date.d};
+    if (![d.y, d.m, d.d].every(Number.isFinite)) return;
+    if (utc(d) !== utc(save.date)){
+      const prev = save.date;
+      save.date = d; computeSolar();
+      const hol = holidayOn(d);
+      if (hol && holidayOn(prev) !== hol) queueBanner(HOLIDAYS[hol].title || `Happy ${HOLIDAYS[hol].name}!`, HOLIDAYS[hol].greet, HOLIDAYS[hol].color);
+      calView = {y:d.y, m:d.m}; renderDate(); renderCalendar();
+    }
+    if (Number.isFinite(+w.hour)) save.hour = ((+w.hour % 24) + 24) % 24;
+    if (w.tour){
+      const T = w.tour;
+      duo.tour = {ph:String(T.ph || 'off'), rem:+T.rem || 0, len:+T.len || 5, sc:T.sc || null, id:+T.id || 0};
+    }
+  }
+
+  function duoReset(){
+    const conn = duo.conn, peer = duo.peer, own = duo.ownClock;
+    duo.session++;
+    duo.conn = null; duo.peer = null; duo.role = null; duo.partner = ''; duo.code = ''; duo.ownClock = null;
+    duo.tour = {ph:'off', rem:0, len:5, sc:null, id:0};
+    pv.seen = false; partnerTagAt = null;
+    if (conn) try { conn.close(); } catch (e) {}
+    if (peer) try { peer.destroy(); } catch (e) {}
+    if (own){
+      save.date = own.date; save.hour = own.hour;
+      computeSolar(); calView = {y:save.date.y, m:save.date.m};
+      renderDate(); renderCalendar(); persist();
+    }
+    setDuoView('setup');
+    renderDuoTour();
+  }
+  function duoDrop(text){
+    if (!duo.role) return;
+    const was = duoLive();
+    duoReset();
+    if (was){ feed(text, '#93a1ae'); duoMsg(text); }
+  }
+
+  // own state, sent ten times a second so the partner can draw our line on their lake
+  function myView(){
+    let st = 'i', x = 0, y = 0, sz = 0, d = 0, T = 0, fx = 0, fy = 0;
+    if (state === 'flying'){ st = 'f'; x = bob.x; y = bob.y; sz = lerp(H*0.02, cast.s, Math.min(1, fly.t/fly.dur)); }
+    else if (state === 'waiting' || state === 'bite'){ st = state === 'bite' ? 'b' : 'w'; x = bob.x; y = bob.y; sz = cast.s; d = bob.dip; }
+    else if (state === 'reeling'){ st = 'r'; fx = reel.fx; fy = reel.fy; T = reel.T; }
+    return {t:'p', st, x:x/W, y:y/H, s:sz/H, d:d/H, T, fx:fx/W, fy:fy/H, bb:save.bobber, rod:save.rod};
+  }
+  setInterval(() => {
+    if (!duo.conn) return;
+    duo.tick++;
+    duoSend(myView());
+    if (duo.role === 'host' && duo.tick % 5 === 0) duoSend(worldMsg());
+    if (duo.partner && performance.now() - duo.lastHeard > 12000) duoDrop(`Lost the connection to ${duo.partner}.`);
+  }, 100);
+
+  /* ---------- catches and the feed ---------- */
+  function feed(text, color, name){
+    const el = document.createElement('div');
+    el.style.setProperty('--c', color || 'var(--rule)');
+    if (name){ const b = document.createElement('b'); b.textContent = name; el.appendChild(b); el.appendChild(document.createTextNode(' ')); }
+    el.appendChild(document.createTextNode(text));
+    feedEl.appendChild(el);
+    while (feedEl.children.length > 3) feedEl.firstChild.remove();
+    setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 700); }, 6500);
+  }
+  function duoOnCatch(sp, weight){
+    if (!duoLive()) return;
+    duoSend({t:'c', id:sp.id, w:weight});
+    if (duo.role === 'host') tourAdd('h', sp, weight);
+  }
+  function onPartnerCatch(m){
+    const sp = SPECIES.find(s => s.id === m.id);
+    if (!sp) return;
+    const w = Math.max(0, +m.w || 0), tier = TIERS[sp.rarity];
+    feed(sp.rarity === 'Junk' ? `reeled in ${article(sp.name)} ${sp.name}.` : `landed ${article(sp.name)} ${sp.name}! ${fmtW(w)}`, tier.color, duo.partner);
+    if (tier.rank >= 2){
+      const x = pd.fx*W, y = pd.fy*H;
+      for (let i = 0; i < 8 + tier.rank*8; i++){
+        const a = -Math.PI*Math.random(), sp2 = H*(0.12 + Math.random()*0.3);
+        bursts.push({x, y, vx:Math.cos(a)*sp2, vy:Math.sin(a)*sp2, age:0, life:0.8 + Math.random()*0.6, color:tier.rank === 5 ? `hsl(${Math.random()*360},90%,72%)` : tier.color, size:1.4 + Math.random()*1.6});
+      }
+      Sound.equip();
+    }
+    if (duo.role === 'host') tourAdd('g', sp, w);
+  }
+
+  /* ---------- tournaments (run by the host) ---------- */
+  const blankScore = () => ({w:0, n:0, b:0, bn:''});
+  function startTour(len){
+    if (duo.role !== 'host' || !duoLive()) return;
+    if (duo.tour.ph === 'count' || duo.tour.ph === 'live') return;
+    len = clamp(+len || 5, 0.05, 30);
+    duo.tour = {ph:'count', rem:3.99, len, sc:{h:blankScore(), g:blankScore()}, id:Date.now()};
+    duoSend(worldMsg());
+  }
+  function stopTour(){
+    if (duo.role !== 'host') return;
+    duo.tour = {ph:'off', rem:0, len:duo.tour.len, sc:null, id:0};
+    duoSend({t:'tstop'}); duoSend(worldMsg());
+    feed('The tournament was stopped.', '#93a1ae');
+    renderDuoTour();
+  }
+  function tourAdd(side, sp, w){
+    const T = duo.tour;
+    if (T.ph !== 'live' || !T.sc || sp.rarity === 'Junk') return;
+    const s = T.sc[side];
+    s.w += w; s.n++;
+    if (w > s.b){ s.b = w; s.bn = sp.name; }
+    duoSend(worldMsg());
+  }
+  function duoFrame(dt){
+    const T = duo.tour;
+    if (T.ph === 'count' || T.ph === 'live'){
+      T.rem -= dt;
+      if (duo.role === 'host' && T.rem <= 0){
+        if (T.ph === 'count'){ T.ph = 'live'; T.rem = T.len*60; duoSend(worldMsg()); }
+        else { T.ph = 'done'; T.rem = 0; duoSend(worldMsg()); duoSend({t:'tend', sc:T.sc, id:T.id}); showTourResult(T.sc, T.id); }
+      }
+      if (T.rem < 0) T.rem = 0;
+    }
+    renderDuoTour();
+  }
+  function renderDuoTour(){
+    const T = duo.tour, live = T.ph === 'live', count = T.ph === 'count', running = (live || count) && !!T.sc;
+    if (T.ph !== duo.lastPh){
+      if (T.ph === 'count'){ Sound.chime(); duo.lastSec = 0; }
+      if (T.ph === 'live' && duo.lastPh === 'count'){ duo.goUntil = performance.now() + 1100; Sound.bite(); }
+      duo.lastPh = T.ph;
+      renderDuoControls();
+    }
+    stage.classList.toggle('touring', running);
+    tourBar.hidden = !running;
+    if (count){
+      const n = Math.max(1, Math.ceil(T.rem));
+      tourBig.hidden = false; tourBig.textContent = n;
+      if (n !== duo.lastSec){ duo.lastSec = n; Sound.plip(); }
+    } else if (live && performance.now() < duo.goUntil){
+      tourBig.hidden = false; tourBig.textContent = 'Go!';
+    } else tourBig.hidden = true;
+    if (!running){ lastTourHTML = ''; return; }
+    const me = T.sc[duo.role === 'host' ? 'h' : 'g'], them = T.sc[duo.role === 'host' ? 'g' : 'h'];
+    if (!me || !them) return;
+    const lead = me.w > them.w + 0.004 ? 'me' : them.w > me.w + 0.004 ? 'them' : '';
+    const time = count ? 'Get ready' : `${fmtClockSecs(T.rem)} left`;
+    const esc = v => String(v).replace(/[&<>"]/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;'}[c]));
+    const html = `<span class="tt">Tournament · ${time}</span><span class="${lead === 'me' ? 'lead' : ''}">You <b>${fmtW(me.w)}</b></span><span class="${lead === 'them' ? 'lead' : ''}">${esc(duo.partner)} <b>${fmtW(them.w)}</b></span>`;
+    if (html !== lastTourHTML){ tourBar.innerHTML = html; lastTourHTML = html; }
+    if (!$('duoLive').hidden) $('duoTourText').textContent = count ? 'The tournament is about to start.' : `Tournament in progress. ${fmtClockSecs(T.rem)} left.`;
+  }
+  function showTourResult(sc, id){
+    if (!sc || !sc.h || !sc.g || (id && id === duo.shownResult)) return;
+    duo.shownResult = id || Date.now();
+    const meK = duo.role === 'host' ? 'h' : 'g', me = sc[meK], them = sc[meK === 'h' ? 'g' : 'h'];
+    let title, prize = 0;
+    if (Math.abs(me.w - them.w) < 0.005){ title = me.w > 0 ? "It's a tie!" : 'Nobody caught anything'; prize = me.w > 0 ? 50 : 0; }
+    else if (me.w > them.w){ title = 'You win!'; prize = 100; }
+    else title = `${duo.partner} wins`;
+    $('resTitle').textContent = title;
+    const body = $('resBody'); body.innerHTML = '';
+    for (const [name, s] of [['You', me], [duo.partner, them]]){
+      const tr = document.createElement('tr');
+      for (const [val, num] of [[name, false], [String(s.n || 0), true], [fmtW(+s.w || 0), true], [s.b ? fmtW(+s.b) : 'None', true]]){
+        const td = document.createElement('td'); td.textContent = val; if (num) td.className = 'num'; tr.appendChild(td);
+      }
+      body.appendChild(tr);
+    }
+    $('resPrize').textContent = prize ? `+${prize} coins` : '';
+    if (prize){ save.coins += prize; persist(); renderWallet(); renderShop(); }
+    tourResult.hidden = false;
+    Sound.win(prize === 100 ? 4 : prize ? 2 : 1);
+    renderDuoControls();
+  }
+  $('resClose').addEventListener('click', () => { tourResult.hidden = true; stage.focus({preventScroll:true}); });
+
+  /* ---------- the Two player panel ---------- */
+  function setDuoView(v, busyText){
+    duo.view = v;
+    $('duoSetup').hidden = !(v === 'setup' || v === 'busy');
+    $('duoWaiting').hidden = v !== 'wait';
+    $('duoLive').hidden = v !== 'live';
+    $('duoBusy').textContent = v === 'busy' ? busyText : '';
+    for (const id of ['duoHostBtn', 'duoJoinBtn', 'duoName', 'duoCode']) $(id).disabled = v === 'busy';
+    $('duoState').textContent = {setup:'Not connected', busy:'Connecting', wait:'Waiting for a friend', live:'Connected'}[v];
+    if (v === 'live'){
+      $('duoPartner').textContent = duo.partner;
+      $('duoHostNote').textContent = duo.role === 'host'
+        ? "You're hosting, so the lake follows your clock and calendar."
+        : `You're on ${duo.partner}'s lake, so the time and season follow their clock. Your own calendar picks back up when you leave.`;
+    }
+    $('duoChip').hidden = v !== 'live';
+    $('duoChipName').textContent = v === 'live' ? `with ${duo.partner}` : '';
+    $('duoChip').title = v === 'live' ? `Fishing with ${duo.partner}` : '';
+    renderDuoControls();
+  }
+  function renderDuoControls(){
+    const T = duo.tour, running = T.ph === 'count' || T.ph === 'live';
+    $('duoTourBtn').hidden = running;
+    $('duoTourStop').hidden = !running;
+    document.querySelectorAll('#duoLen button').forEach(b => { b.disabled = running; b.classList.toggle('on', +b.dataset.len === tourLen); });
+    if (!running) $('duoTourText').textContent = 'See who can land the most total weight before time runs out. Junk does not count. The winner earns 100 coins.';
+  }
+  $('duoName').value = save.name || '';
+  $('duoName').addEventListener('change', readName);
+  $('duoCode').addEventListener('input', e => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 5); });
+  $('duoCode').addEventListener('keydown', e => { if (e.key === 'Enter') duoJoin(); });
+  $('duoHostBtn').addEventListener('click', duoHost);
+  $('duoJoinBtn').addEventListener('click', duoJoin);
+  $('duoCancel').addEventListener('click', () => { duoReset(); duoMsg(''); });
+  $('duoLeave').addEventListener('click', () => { duoSend({t:'bye'}); duoReset(); duoMsg(''); feed('You left the lake.', '#93a1ae'); });
+  $('duoCopy').addEventListener('click', e => {
+    const btn = e.currentTarget, code = duo.code;
+    const done = () => { btn.textContent = 'Copied'; setTimeout(() => { btn.textContent = 'Copy code'; }, 1800); };
+    try {
+      navigator.clipboard.writeText(code).then(done, () => { getSelection().selectAllChildren($('duoCodeShow')); btn.textContent = 'Press Ctrl+C to copy'; });
+    } catch (err){ getSelection().selectAllChildren($('duoCodeShow')); }
+  });
+  document.querySelectorAll('#duoLen button').forEach(b => b.addEventListener('click', () => { tourLen = +b.dataset.len; renderDuoControls(); }));
+  $('duoTourBtn').addEventListener('click', () => {
+    if (!duoLive()) return;
+    if (duo.role === 'host') startTour(tourLen); else duoSend({t:'treq', len:tourLen});
+    closeSheet();
+  });
+  $('duoTourStop').addEventListener('click', () => { if (duo.role === 'host') stopTour(); else duoSend({t:'tstop'}); });
+  setDuoView('setup');
+
+  /* ---------- drawing the partner on our lake ---------- */
+  function duoLerp(dt){
+    if (!pv.seen) return;
+    const k = Math.min(1, dt*12);
+    for (const key of PV_NUM) pd[key] += (pv[key] - pd[key])*k;
+  }
+  const partnerTip = () => ({x:W*(0.305 + 0.03*pd.T), y:H*(0.42 + 0.1*pd.T)});
+  function drawPartnerRod(){
+    if (!duoLive() || !pv.seen) return;
+    const rod = RODS.find(r => r.id === pv.rod) || RODS[0];
+    paintRod(ctx, {x:W*0.115, y:H*1.03}, partnerTip(), W*(0.012 + 0.05*pd.T), rod, pv.st === 'r' ? t*14 : 0.6, 0.85, H*0.02, c => lit(c));
+  }
+  function drawPartnerWater(){
+    partnerTagAt = null;
+    if (!duoLive() || !pv.seen) return;
+    const bb = BOBBERS.find(b => b.id === pv.bb) || BOBBERS[0], tip = partnerTip();
+    if (pv.st === 'f' || pv.st === 'w' || pv.st === 'b'){
+      const sz = Math.max(4, pd.s*H), x = pd.x*W, y0 = pd.y*H;
+      const y = pv.st === 'f' ? y0 : y0 + Math.sin(t*2 + 1)*sz*0.12 + pd.d*H;
+      drawLine(tip, {x, y:y - bobberTop(bb, sz)}, pv.st === 'f' ? 0 : 0.6);
+      paintBobber(ctx, x, y, sz, bb, pv.st === 'f' ? undefined : y0 + sz*0.35);
+      partnerTagAt = {x, y:y - bobberTop(bb, sz) - 10, alert:pv.st === 'b'};
+    } else if (pv.st === 'r'){
+      const x = pd.fx*W, y = pd.fy*H;
+      ctx.fillStyle = 'rgba(6,16,26,.4)';
+      ctx.beginPath(); ctx.ellipse(x + W*0.012, y + H*0.012, W*0.03, W*0.009, 0, 0, Math.PI*2); ctx.fill();
+      drawLine(tip, {x, y}, Math.max(0, 0.8 - pd.T));
+      ctx.strokeStyle = 'rgba(225,236,244,.55)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.ellipse(x, y, H*0.011, H*0.0037, 0, 0, Math.PI*2); ctx.stroke();
+      if (Math.random() < 0.08) ripple(x, y, H*0.025, 0.8);
+      partnerTagAt = {x, y:y - 16, alert:false};
+    } else {
+      const sz = H*0.018, bx = tip.x + Math.sin(t*2.2 + 1)*W*0.005, by = tip.y + H*0.085;
+      drawLine(tip, {x:bx, y:by - bobberTop(bb, sz)}, 0);
+      paintBobber(ctx, bx, by, sz, bb);
+      partnerTagAt = {x:tip.x, y:tip.y - 12, alert:false};
+    }
+  }
+  function drawPartnerTag(){
+    if (!partnerTagAt || !duo.partner) return;
+    const text = partnerTagAt.alert ? `${duo.partner} has a bite!` : duo.partner;
+    ctx.font = '600 12px Chivo, system-ui, sans-serif';
+    const w = ctx.measureText(text).width + 16, h = 19;
+    const x = clamp(partnerTagAt.x, w/2 + 4, W - w/2 - 4), y = clamp(partnerTagAt.y, h + 4, H - 4);
+    ctx.fillStyle = partnerTagAt.alert ? 'rgba(228,85,62,.92)' : 'rgba(9,14,21,.74)';
+    rr(ctx, x - w/2, y - h, w, h, 9.5); ctx.fill();
+    ctx.fillStyle = partnerTagAt.alert ? '#fff8f0' : PARTNER_COLOR;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(text, x, y - h/2 + 0.5);
+    ctx.textBaseline = 'alphabetic';
+  }
 
   /* =========================================================
      UPDATE
      ========================================================= */
   function update(dt){
     save.hour += dt/HOUR_SECONDS;
-    if (save.hour >= 24){ save.hour -= 24; nextDay(); }
+    if (save.hour >= 24){ save.hour -= 24; if (!duo.ownClock) nextDay(); }
     env = computeEnv();
     updateClock();
     saveTimer += dt;
@@ -1309,9 +1934,9 @@ tr.fresh td{animation:fresh 2.4s ease-out}
     updateWeather(dt);
 
     bob.dip += (bob.dipTarget - bob.dip)*Math.min(1, dt*12);
-    if (state === 'reeling' && holding) reelAngle += dt*16;
+    if (state === 'reeling' && holding && !sheetOpen) reelAngle += dt*16;
 
-    switch (state){
+    if (!sheetOpen) switch (state){
       case 'idle':
         setPrompt(IDLE_TEXT);
         break;
@@ -2135,13 +2760,16 @@ tr.fresh td{animation:fresh 2.4s ease-out}
       ctx.strokeStyle = 'rgba(225,236,244,.6)'; ctx.lineWidth = 1;
       ctx.beginPath(); ctx.ellipse(reel.fx, reel.fy, H*0.012, H*0.004, 0, 0, Math.PI*2); ctx.stroke();
     }
+    drawPartnerWater();
     drawDrops();
     drawDock();
     drawReeds();
+    drawPartnerRod();
     drawRod(tip);
     drawWeather();
     if (env.dark > 0.005){ ctx.fillStyle = `rgba(4,8,26,${env.dark})`; ctx.fillRect(-10, -10, W + 20, H + 20); }
     drawGlows();
+    drawPartnerTag();
     if (state === 'bite'){
       const jump = Math.abs(Math.sin(t*9))*H*0.015;
       ctx.font = `${Math.round(H*0.075)}px "Alfa Slab One", Georgia, serif`;
@@ -2588,10 +3216,16 @@ tr.fresh td{animation:fresh 2.4s ease-out}
   function frame(now){
     const dt = Math.min(0.05, (now - last)/1000);
     last = now;
-    if (!sheetOpen && !userPaused){ t += dt; update(dt); }
+    const frozen = userPaused || (sheetOpen && !duoLive());
+    if (!frozen){ t += dt; update(dt); }
+    if (!userPaused) duoFrame(dt);
+    duoLerp(dt);
     draw();
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
 })();
 </script>
+
+</body>
+</html>

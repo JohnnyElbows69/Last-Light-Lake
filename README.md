@@ -2,7 +2,7 @@
 
 A relaxing fishing game that runs right in your browser. Fish your way through a full year on a mountain lake: the seasons change, holidays bring surprises, and the rarest catches are worth chasing.
 
-**Play it here:** https://JohnnyElbows69.github.io/Last-Light-Lake/
+**Play it here:** https://johnnyelbows69.github.io/Last-Light-Lake/
 
 ## How to play
 
@@ -14,6 +14,8 @@ Works with a mouse, touch, or the Space bar. Press P to pause.
 
 ## Features
 
+- Two player mode: host a game, send your friend a 5 letter invite code, and fish the same lake together
+- Tournaments: race a friend for 3, 5, or 10 minutes to see who lands the most total weight
 - 12 species of fish, from common perch to legendary sturgeon and 4 rare exotics
 - A full day and night cycle with a 365 day calendar and four seasons
 - Holiday events with their own decorations and one of a kind catches
